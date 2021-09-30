@@ -7,8 +7,14 @@ import {Wrapper} from './ButtonRow.styles';
 
 const ButtonRow = ({btnRow, onKeyPress}) => (
   <Wrapper>
-    {btnRow.map(([btnKey, value]) => (
-      <Button id={btnKey} key={btnKey} value={value} onKeyPress={onKeyPress} />
+    {btnRow.map(([btnKey, value, type]) => (
+      <Button
+        id={btnKey}
+        key={btnKey}
+        value={value}
+        type={type ? type : btnKey}
+        onKeyPress={onKeyPress}
+      />
     ))}
   </Wrapper>
 );

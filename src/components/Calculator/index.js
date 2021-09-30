@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 // Components
 import Display from '../Display';
 import KeyPad from '../KeyPad';
@@ -14,8 +14,11 @@ import {init, reducer} from '../../reducer';
 const Calculator = () => {
   const [state, setState] = useReducer(reducer, initialState, init);
 
+  useEffect(() => {
+    console.log('Calculator use effect:', state);
+  });
   return (
-    <Wrapper>
+    <Wrapper className="calculator">
       <Display formula={state.formula} input={state.input}></Display>
       <KeyPad keyPad={keyPad} onKeyPress={setState} />
     </Wrapper>
