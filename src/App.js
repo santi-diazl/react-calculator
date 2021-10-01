@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 // Components
 import Calculator from './components/Calculator';
 // Hooks

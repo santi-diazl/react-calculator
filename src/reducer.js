@@ -75,7 +75,6 @@ const validateDecimal = (state, value) => {
       return appendReplaceDisplays(state, value, inputType);
     case 'result':
     case 'zero':
-      console.log(0, 'replacing displays');
       return replaceDisplays(state, value, inputType);
     case 'number':
       return appendToDisplays(state, value);
