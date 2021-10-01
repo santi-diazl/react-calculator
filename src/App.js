@@ -1,6 +1,6 @@
 import React from 'react';
 // Components
-import Calculator from './components/Calculator';
+import Calculator from './components/calculator';
 // Hooks
 // import useInputValidation from './hooks/useInputValidation';
 // Styles

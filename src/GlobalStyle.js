@@ -11,16 +11,19 @@ export const GlobalStyle = createGlobalStyle`
         --opColour: #FBB814;
         --btnColour: rgb(239, 239, 239);
         --maxWidth: 1280px;
-        max-width: var(---maxWidth);
+
+    }
+
+    body {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
-    }
-
-    body {
-        width: 100vh;
-        height: auto;
+        @media screen and (max-width: 575.98px){
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+        }
     }
 
     #calculator {

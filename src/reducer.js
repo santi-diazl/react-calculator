@@ -1,8 +1,9 @@
 import {getInputType, composer, cleanUpFormula} from './helpers';
-
+// Reducer functions for useReducer hook
 export const init = (initialState) => {
   return initialState;
 };
+// Check inputted value type
 const validate = ([state, {type, payload}]) => {
   const {value, initialState} = payload;
   switch (type) {
@@ -20,22 +21,23 @@ const validate = ([state, {type, payload}]) => {
       return {...state};
   }
 };
-
+// Toggles solved true/false
 const toggleSolved = (state) => {
   if (state.solved) return {...state, result: '', solved: false};
   if (state.result) return {...state, solved: true};
   return {...state};
 };
-
+// Toggles negative sign true/false
 const toggleNegativeSign = (state) => {
-  const negativeSign = /([-÷x+]-)$/;
+  const negativeSign = /([-÷x+][-])$/;
   if (negativeSign.test(state.formula)) return {...state, negativeSign: true};
   if (state.negativeSign) return {...state, negativeSign: false};
   return {...state};
 };
-
+// Reducer function using composer
 export const reducer = composer(validate, toggleSolved, toggleNegativeSign);
 
+// Validates digit inputted against current input
 const validateDigit = (state, value) => {
   const inputType = getInputType(state);
   if (value === '0' && state.input === '0') return {...state};
@@ -52,10 +54,12 @@ const validateDigit = (state, value) => {
   }
 };
 
+// Validates operator inputted against current input
 const validateOperator = (state, value) => {
   const inputType = getInputType(state);
   switch (inputType) {
     case 'operator':
+      // - as negative sign
       if (value === '-' && !state.negativeSign) {
         return appendToDisplays(state, value);
       } else return replaceOperators(state, value);
@@ -67,6 +71,7 @@ const validateOperator = (state, value) => {
   }
 };
 
+// Validates decimal against current input
 const validateDecimal = (state, value) => {
   const inputType = getInputType(state);
   if (state.input.includes('.') && inputType !== 'result') return {...state};
@@ -83,7 +88,7 @@ const validateDecimal = (state, value) => {
   }
 };
 
-// appends inputted value to formula, replaces input
+// Appends inputted value to formula, replaces input
 const appendReplaceDisplays = (state, value, inputType) => {
   let {formula, result} = state;
   let newValue = value;
@@ -94,7 +99,7 @@ const appendReplaceDisplays = (state, value, inputType) => {
   return {...state, formula: formula + newValue, input: newValue};
 };
 
-// appends inputted value to both formula and input
+// Appends inputted value to both formula and input
 const appendToDisplays = (state, value) => {
   const {formula, input} = state;
   return {...state, formula: formula + value, input: input + value};
@@ -109,15 +114,19 @@ const replaceDisplays = (state, value, inputType) => {
   return {...state, formula: newValue, input: newValue};
 };
 
-// Replaces operators with inputted operator
+// Replaces operators in formula with inputted operator
 const replaceOperators = (state, value) => {
   const {formula, negativeSign} = state;
+  // if negative sign is on then replace last two operators
+  // Otherwise replace last operator
   const index = negativeSign ? -2 : -1;
   return {...state, formula: formula.slice(0, index) + value, input: value};
 };
 
+// Evaluates formula
 const evalFormula = (state) => {
   let {formula, input, result} = state;
+  if (!formula) return {...state};
   formula = cleanUpFormula(formula);
   // eslint-disable-next-line no-eval
   result = eval(formula).toString();

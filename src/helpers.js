@@ -5,8 +5,17 @@ export const composer =
   (...fns) =>
   (...args) =>
     fns.reduce((composed, f) => f(composed), args);
-// replaces ÷ and x in formula with / and * respectively
-const replaceOps = (formula) => {
+
+// Removes trailing operator in formula
+const removeTrailingOp = ([formula]) => {
+  let newFormula = formula;
+  if (isOperator(formula[formula.length - 1])) {
+    newFormula = newFormula.slice(0, -1);
+  }
+  return newFormula;
+};
+// Replaces ÷ and x in formula with / and * respectively for eval()
+const replaceDivMult = (formula) => {
   let newFormula = formula;
   newFormula = newFormula.replace('÷', '/').replace('x', '*');
   return newFormula;
@@ -23,18 +32,10 @@ const parenthesizeNegs = (formula) => {
   }
   return newFormula;
 };
-// Removes trailing operator if it exists
-const removeTrailingOp = ([formula]) => {
-  let newFormula = formula;
-  if (isOperator(formula[formula.length - 1])) {
-    newFormula = newFormula.slice(0, -1);
-  }
-  return newFormula;
-};
 // Composed clean up function
 export const cleanUpFormula = composer(
   removeTrailingOp,
-  replaceOps,
+  replaceDivMult,
   parenthesizeNegs,
 );
 
