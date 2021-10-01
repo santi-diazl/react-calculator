@@ -21,7 +21,6 @@
         "react/prop-types": "off",
         "indent": "off",
         "operator-linebreak": "off",
-        "no-unused-vars": "off",
-        "unknownAtRules": "ignore"
+        "no-unused-vars": "off"
     }
 }

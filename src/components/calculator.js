@@ -10,9 +10,9 @@ import {init, reducer} from '../reducer';
 const Calculator = () => {
   const [state, setState] = useReducer(reducer, initialState, init);
 
-  useEffect(() => {
-    console.log(state);
-  });
+  // useEffect(() => {
+  //   console.log(state);
+  // });
 
   return (
     <div id="calculator">
