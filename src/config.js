@@ -35,5 +35,4 @@ export const state = {
   input: '0',
   negativeSign: false,
   result: '',
-  solved: false,
 };
