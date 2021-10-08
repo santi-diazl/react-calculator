@@ -38,11 +38,3 @@ export const cleanUpFormula = composer(
   replaceDivMult,
   parenthesizeNegs,
 );
-
-// Get current input type (i.e number, operator, result)
-export const getInputType = ({input, result}) => {
-  if (result) return 'result';
-  if (isOperator(input)) return 'operator';
-  if (input === '0') return 'zero';
-  else return 'number';
-};
