@@ -1,22 +1,24 @@
+import {state} from './config';
 import {cleanUpFormula} from './helpers';
 // Reducer functions for useReducer hook
 export const init = (initialState) => {
   return initialState;
 };
-// Check inputted value type
-export const reducer = (state, {type, payload}) => {
+// Assigns a handler based on input value type (i.e digit, operator, etc.)
+export const reducer = (state, {valueType, payload}) => {
   const {value, initialState} = payload;
-  const inputType = !isNaN(state.input) ? 'number' : 'operator';
-  if (state.result && type !== 'clear') {
-    return handleJustSolved(state, value, type);
+  const inputIsNumber = !isNaN(state.input) ? true : false;
+  // Formula was just solved
+  if (state.result && valueType !== 'clear') {
+    return handleJustSolved(state, value, valueType);
   }
-  switch (type) {
+  switch (valueType) {
     case 'digit':
-      return handleDigitClick(state, value, inputType);
+      return handleDigitClick(state, value, inputIsNumber);
     case 'operator':
-      return handleOpClick(state, value, inputType);
+      return handleOpClick(state, value, inputIsNumber);
     case 'decimal':
-      return handleDecimalClick(state, inputType);
+      return handleDecimalClick(state, inputIsNumber);
     case 'equals':
       return evalFormula(state);
     case 'clear':
@@ -26,22 +28,26 @@ export const reducer = (state, {type, payload}) => {
   }
 };
 
-const handleDigitClick = (state, digit, inputType) => {
+const handleDigitClick = (state, digit, inputIsNumber) => {
   const {formula, input} = state;
   if (digit === '0' && input === '0') return {...state};
   let newInput;
-  if (inputType === 'number') {
+  if (inputIsNumber) {
+    // current display is a number, append digit
     newInput = {input: input === '0' ? digit : input + digit};
   } else {
+    // current display is an operator, replace with digit
     newInput = {input: digit};
   }
-  return {...state, ...newInput, formula: formula + digit};
+  return {...state, formula: formula + digit, ...newInput};
 };
 
-const handleOpClick = (state, operator, inputType) => {
+const handleOpClick = (state, operator, inputIsNumber) => {
   const {formula, negativeSign} = state;
   let newFormula;
-  if (inputType === 'number' || (!negativeSign && operator === '-')) {
+  // current display is a number or an operator with negative sign off
+  // Append operator to formula, turn on negative sign if -
+  if (inputIsNumber || (operator === '-' && !negativeSign)) {
     newFormula = {
       formula: formula + operator,
       negativeSign: operator === '-' ? true : false,
@@ -56,11 +62,11 @@ const handleOpClick = (state, operator, inputType) => {
   return {...state, ...newFormula, input: operator};
 };
 
-const handleDecimalClick = (state, inputType) => {
+const handleDecimalClick = (state, inputIsNumber) => {
   const {formula, input} = state;
   if (input.includes('.')) return {...state};
   let newFormulaInput;
-  if (inputType === 'number') {
+  if (inputIsNumber) {
     newFormulaInput = {
       formula: input === '0' ? '0.' : formula + '.',
       input: input + '.',
@@ -71,10 +77,10 @@ const handleDecimalClick = (state, inputType) => {
   return {...state, ...newFormulaInput};
 };
 
-const handleJustSolved = ({result}, value, type) => {
+const handleJustSolved = ({result}, value, valueType) => {
   let newFormula;
   const newValue = value === '.' ? '0.' : value;
-  if (type === 'digit' || type === 'decimal') {
+  if (valueType === 'digit' || valueType === 'decimal') {
     newFormula = {formula: newValue};
   } else {
     newFormula = {formula: result + newValue};
@@ -83,8 +89,7 @@ const handleJustSolved = ({result}, value, type) => {
 };
 
 // Evaluates formula
-const evalFormula = (state) => {
-  let {formula, input, result} = state;
+const evalFormula = ({formula, input, result}) => {
   if (!formula) return {...state};
   formula = cleanUpFormula(formula);
   // eslint-disable-next-line no-eval
@@ -93,9 +98,8 @@ const evalFormula = (state) => {
   } catch (error) {
     console.error(error);
   }
-
   formula = `${formula} = ${result}`;
   input = result;
 
-  return {...state, formula: formula, input: input, result: result};
+  return {formula: formula, input: input, result: result, negativeSign: false};
 };

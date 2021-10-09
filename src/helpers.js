@@ -1,7 +1,7 @@
-// check if value is an operator
-export const isOperator = (value) => /[x÷+-]/.test(value);
-// used to combine functions into one
-export const composer =
+// HOF that takes functions as args and:
+// Returns a function that takes args and supplies them to
+// provided functions returning one reduced value
+const composer =
   (...fns) =>
   (...args) =>
     fns.reduce((composed, f) => f(composed), args);
@@ -9,12 +9,12 @@ export const composer =
 // Removes trailing operator in formula
 const removeTrailingOp = ([formula]) => {
   let newFormula = formula;
-  if (isOperator(formula[formula.length - 1])) {
+  if (/[+÷x-]/.test(formula[formula.length - 1])) {
     newFormula = newFormula.slice(0, -1);
   }
   return newFormula;
 };
-// Replaces ÷ and x in formula with / and * respectively for eval()
+// Replaces ÷ and x in formula for eval() with / and * respectively
 const replaceDivMult = (formula) => {
   let newFormula = formula;
   newFormula = newFormula.replace('÷', '/').replace('x', '*');

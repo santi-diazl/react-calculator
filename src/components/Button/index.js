@@ -4,14 +4,14 @@ import {Wrapper} from './Button.styles';
 // Initial state for reset button
 import {state as initialState} from '../../config';
 
-const Button = ({value = '', id = '', type = value, onKeyPress}) => (
+const Button = ({value = '', id = '', valueType, onKeyPress}) => (
   <Wrapper
     id={id}
     value={value}
-    type={type}
+    valueType={valueType}
     onClick={(e) =>
       onKeyPress({
-        type: type,
+        valueType: valueType,
         payload: {
           value: e.target.value,
           initialState: id === 'clear' ? initialState : '',
